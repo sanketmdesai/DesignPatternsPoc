@@ -1,5 +1,8 @@
 package com.sanketdesai.designpattern.observerpattern;
 
+import com.sanketdesai.designpattern.observerpattern.changemanager.Event;
+import com.sanketdesai.designpattern.observerpattern.changemanager.EventManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +23,26 @@ public abstract class AbstractObservable implements Observable {
         return name;
     }
 
-    List<Observer> observersList = new ArrayList<Observer>();
+    private EventManager eventManager = EventManager.getInstance();;
 
-    public void notifyObservers()
+    public EventManager getEventManager()
     {
+        if(eventManager == null)
+        {
+            eventManager = EventManager.getInstance();
+        }
+        return eventManager;
+    }
 
-        for(Observer o : observersList)
+    public void notifyObservers(Event.EVENT event)
+    {
+        for(Observer o : getEventManager().getEventListeners(event))
         {
             o.update(this);
         }
+    }
+    public void notifyObservers()
+    {
+        this.notifyObservers(Event.EVENT.DEFAULT_EVENT);
     }
 }
